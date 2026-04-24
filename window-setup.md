@@ -43,11 +43,11 @@ Open a regular PowerShell window (not admin) and run:
 
 ```powershell
 cd $HOME\Documents
-git clone <YOUR_REPO_URL_HERE>
+git clone https://github.com/deepanshutyagi86/energy-trading.git
 cd energy-trading
 ```
 
-Replace `<YOUR_REPO_URL_HERE>` with the actual GitHub URL (e.g. `https://github.com/deepanshutyagi/energy-trading.git`).
+Replace `https://github.com/deepanshutyagi86/energy-trading.git` with the actual GitHub URL (e.g. `https://github.com/deepanshutyagi/energy-trading.git`).
 
 Verify the files are there:
 ```powershell
