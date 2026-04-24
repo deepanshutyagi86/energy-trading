@@ -1,0 +1,105 @@
+<!--  @file       login_page.html (FIXED)
+*     Changes:
+*     - Removed broken <script src="./consumer.js"></script> (was a Node-only file)
+*     - Fixed form to show login success/failure message
+*-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CoE Blockchain</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- REMOVED: <script src="./consumer.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+    body { font: 20px Montserrat, sans-serif; line-height: 1.8; color: #f5f6f7; }
+    .margin { margin-bottom: 20px; }
+    .bg-1 {
+      font-size: 40px;
+      background-color: #1abc9c;
+      background-image: url('./public/images/blue-bg.jpg');
+      background-size: 100% 100%;
+      color: #ffffff;
+    }
+    .container-fluid { padding-top: 70px; padding-bottom: 70px; }
+    .navbar {
+      padding-top: 15px; padding-bottom: 15px;
+      border: 0; border-radius: 0; margin-bottom: 0;
+      font-size: 20px; letter-spacing: 5px;
+      background-color: #B9D2DF;
+    }
+    .navbar-nav li a:hover { color: #1308b3 !important; }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown">Login to Ethereum Wallet<b class="caret"></b></a>
+              <ul class="dropdown-menu" style="padding: 15px; min-width: 350px;">
+                <li>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <form class="form" role="form" id="login-nav" onsubmit="return loginSubmit(event);">
+                        <div class="form-group">
+                          <input type="password" class="form-control" id="passphrase" placeholder="Account Passphrase" required>
+                        </div>
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-success btn-block">Submit</button>
+                        </div>
+                      </form>
+                      <p id="status" style="color: #333;"></p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- First Container -->
+    <div class="container-fluid bg-1 text-center" style="height: 800px;">
+      <br>
+      <img src="./public/images/oldlogo.png" class="img-responsive img-circle margin" style="display:inline" width="300" height="300">
+      <br>
+      <p>Peer to Peer Energy Trading using Blockchain</p>
+      <h>CoE-CNDS, VJTI</h>
+      <br><br><br>
+      <a href="https://gitlab.com/JheelNagaria/CoE-Blockchain" style="color:white"><p>Github Repository</p></a>
+      <br>
+    </div>
+  </body>
+
+  <script>
+    var socket = io();
+
+    function loginSubmit(e) {
+      e.preventDefault();
+      var input = document.getElementById("passphrase").value;
+      socket.emit('check_passphrase', input);
+      document.getElementById("status").innerHTML = "Checking...";
+      return false;
+    }
+
+    socket.on('unlock_ethereum_account_result', function(data) {
+      if (data === true) {
+        document.getElementById("status").innerHTML = "Login successful! Redirecting...";
+        setTimeout(function() { window.location.href = "/enter_wallet"; }, 500);
+      } else {
+        document.getElementById("status").innerHTML = "Wrong passphrase, try again";
+      }
+    });
+  </script>
+</html>

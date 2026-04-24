@@ -1,0 +1,23 @@
+{
+    "name": "p2p-energy-trading",
+    "version": "1.0.0",
+    "description": "Peer to Peer Energy Trading using Blockchain (software-only demo)",
+    "scripts": {
+        "start-main": "node server.js",
+        "start-producer": "node producer.js",
+        "start-consumer": "node consumer.js"
+    },
+    "dependencies": {
+        "express": "4.17.3",
+        "socket.io": "2.4.1",
+        "socket.io-client": "2.4.0",
+        "web3": "0.20.7",
+        "web3admin": "0.4.4"
+    },
+    "engines": {
+        "node": ">=14 <=18"
+    },
+    "devDependencies": {
+        "ganache": "^7.9.2"
+    }
+}

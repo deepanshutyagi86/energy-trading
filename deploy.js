@@ -1,0 +1,38 @@
+/* deploy.js - Deploy the contract to Ganache and save the address */
+var Web3 = require('web3');
+var web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
+var fs = require('fs');
+
+var bytecode = "0x608060405234801561001057600080fd5b5061027a806100206000396000f30060806040526004361061006c5763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663105ae03a811461007157806327e235e3146100a45780634e61e2ed146100c55780639ba7548e146100e6578063cef29f37146100ff575b600080fd5b34801561007d57600080fd5b50610092600160a060020a0360043516610123565b60408051918252519081900360200190f35b3480156100b057600080fd5b50610092600160a060020a036004351661013e565b3480156100d157600080fd5b50610092600160a060020a0360043516610150565b6100fd600160a060020a036004351660243561015d565b005b34801561010b57600080fd5b506100fd600160a060020a036004351660243561022c565b600160a060020a031660009081526020819052604090205490565b60006020819052908152604090205481565b600160a060020a03163190565b600160a060020a03821660009081526020819052604090205481810310156101cd57600160a060020a038216600081815260208190526040808220805485900390555183156108fc0291849190818181858888f193505050501580156101c7573d6000803e3d6000fd5b50610228565b600160a060020a03821660008181526020819052604080822054905181156108fc0292818181858888f1935050505015801561020d573d6000803e3d6000fd5b50600160a060020a0382166000908152602081905260408120555b5050565b600160a060020a039091166000908152602081905260409020805490910190555600a165627a7a72305820eebdfb5afe3524ebaf124c7c909b52d02f70cf8349126c5547a65d754cde0b7a0029";
+
+console.log('Connecting to Ganache at http://127.0.0.1:8545 ...');
+var accounts;
+try { accounts = web3.eth.accounts; } catch (e) {
+  console.error('ERROR: Cannot connect. Is Ganache running?'); process.exit(1);
+}
+if (!accounts || !accounts.length) { console.error('ERROR: No accounts'); process.exit(1); }
+console.log('Deploying from:', accounts[0]);
+
+var txHash = web3.eth.sendTransaction({from: accounts[0], data: bytecode, gas: 2000000});
+console.log('Tx submitted:', txHash);
+
+// Poll for receipt
+var tries = 0;
+var poll = setInterval(function() {
+  tries++;
+  var receipt = web3.eth.getTransactionReceipt(txHash);
+  if (receipt && receipt.contractAddress) {
+    clearInterval(poll);
+    console.log('================================================');
+    console.log('Contract deployed at:', receipt.contractAddress);
+    console.log('================================================');
+    fs.writeFileSync('.contract-address', receipt.contractAddress);
+    console.log('Saved to .contract-address');
+    process.exit(0);
+  }
+  if (tries > 20) {
+    clearInterval(poll);
+    console.error('Timed out waiting for receipt');
+    process.exit(1);
+  }
+}, 500);

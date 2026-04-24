@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Geth blockchain data (regenerated per machine)
+chaindata/
+Geth/
+geth.ipc
+
+# Ethereum accounts (lives in system keystore, not here — but just in case)
+keystore/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Project-specific: the old Geth binaries are huge
+Softwares/Ethereum_Go_Lang/*.tar.gz
